@@ -1,4 +1,5 @@
 # Build and Release Folders
+tasktracker/node_modules/
 bin-debug/
 bin-release/
 [Oo]bj/
