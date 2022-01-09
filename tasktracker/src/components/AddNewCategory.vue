@@ -24,6 +24,8 @@ export default {
         return;
       }
       console.log("Add category: ", this.newCategory);
+      this.$store.dispatch('addCategory', this.newCategory)
+      this.newCategory = "";
     }
   }
 }
