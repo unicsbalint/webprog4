@@ -7,9 +7,10 @@
                         <h5 class="card-title">{{category.title}}</h5>
 
                         <div id="task">
-                            <div v-for="task in getTasksById" :key=task.id class="card bg-light mb-3" style="max-width: 18rem; cursor: pointer;">
+                            <div @click.prevent="showModal(task)" v-for="task in getTasksById" :key=task.id class="card bg-light mb-3" style="max-width: 18rem; cursor: pointer;">
                                 <div class="card-body">
-                                    <p class="card-text">{{task.title}}</p>
+                                    <p style="font-weight: bold" class="card-text">{{task.title}}</p>
+                                    <p class="description">{{task.description}}</p>
                                 </div>
                             </div>
                         </div>
@@ -25,7 +26,13 @@
             <div class="taskModalContent">
                 <span class="close">&times;</span>
                 <input v-model="newTask" style="margin-bottom: 1rem" class="form-control" type="text" placeholder="Enter the title of the new task">
-                <button @click.prevent="addNewTask()" class="btn btn-success">Add new task</button>
+                <textarea v-model="newTaskDescription" style="margin-bottom: 1rem" class="form-control" type="text" placeholder="Description"></textarea>
+                <div v-if="!modify">
+                    <button @click.prevent="addNewTask()" class="btn btn-success">Add new task</button>
+                </div>
+                <div v-else>
+                    <button @click.prevent="modifyTask()" class="btn btn-success">Modify task</button>
+                </div>
             </div>
         </div>
     </div>
@@ -37,10 +44,22 @@ export default {
     data() {
         return{
             newTask: "",
+            newTaskDescription:"",
+            modify: false,
+            modifyId: null,
         }
     },
     methods:{
-        showModal(){
+        showModal(task = {}){
+            if(task.id != null){
+                this.modify = true;
+                this.newTask = task.title;
+                this.newTaskDescription = task.description;
+                this.modifyId = task.id;
+            }
+            else{
+                 this.modify = false;
+            }
             var modal = document.getElementById(this.category.title+'_'+this.category.id);
             var span = document.getElementsByClassName("close")[0];
             modal.style.display = "block";
@@ -60,9 +79,23 @@ export default {
                 alert("Please add a proper task");
                 return;
             }
-            this.$store.dispatch('addTask', {task:this.newTask, categoryId: this.category.id});
+            this.$store.dispatch('addTask', {task:this.newTask, description: this.newTaskDescription, categoryId: this.category.id});
             this.newTask = "";
-            
+            this.newTaskDescription = "";
+
+            var modal = document.getElementById(this.category.title+'_'+this.category.id);
+            modal.style.display = "none";
+        },
+        modifyTask(){
+            if(this.newTask.length < 3){
+                alert("Please add a proper task");
+                return;
+            }
+            this.$store.dispatch('modifyTask', {id:this.modifyId,task:this.newTask, description: this.newTaskDescription});
+            this.newTask = "";
+            this.newTaskDescription = "";
+            this.modifyId = null;
+
             var modal = document.getElementById(this.category.title+'_'+this.category.id);
             modal.style.display = "none";
         }
@@ -112,5 +145,11 @@ export default {
     color: black;
     text-decoration: none;
     cursor: pointer;
+    }
+    .description{
+        font-style: italic; 
+        background-color: rgba(128, 128, 128, 0.281);
+        padding: 20px;
+        border-radius: 10px;
     }
 </style>

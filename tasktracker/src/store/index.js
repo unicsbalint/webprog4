@@ -10,9 +10,9 @@ export default new Vuex.Store({
             {id:1, title:"Doing"}
         ],
         tasks:[
-            {title:"DOING TESZT",category_id:1},
-            {title:"DOING TESZT 2",category_id:1},
-            {title:"BACKLOG TESZT",category_id:0},
+            {id:0,title:"VUE JS HAND IN PROJECT",description:"Description for test 1",category_id:1},
+            {id:1,title:"CLEAN CODE",description:"Description for test 2",category_id:1},
+            {id:3,title:"A lot to do",description:"Another description but for another category",category_id:0},
         ]
     },
     getters: {
@@ -44,7 +44,20 @@ export default new Vuex.Store({
             state.categories.push({id:max,title:newCategory});
         },
         ADDTASK(state, task){
-            state.tasks.push({title:task.task,category_id:task.categoryId});
+            let max = 0;
+            state.tasks.forEach(task => {
+                if(task.id > max) max = task.id;
+            });
+            max++;
+            state.tasks.push({id:max,title:task.task,description:task.description,category_id:task.categoryId});
+        },
+        MODIFYTASK(state,modifiedTask){
+            state.tasks.forEach(task => {
+                if(task.id == modifiedTask.id){
+                    task.title = modifiedTask.task;
+                    task.description = modifiedTask.description;
+                }
+            });
         }
     },
     actions: {
@@ -53,6 +66,9 @@ export default new Vuex.Store({
         },
         addTask(context,task){
             context.commit('ADDTASK', task);
+        },
+        modifyTask(context,task){
+            context.commit('MODIFYTASK', task);
         }
     },
 })
