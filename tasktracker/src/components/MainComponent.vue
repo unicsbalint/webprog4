@@ -1,9 +1,11 @@
 
 <template>
-  <div style="display: inline-flex; margin-right: 2rem">
-      <Table></Table>
-      <AddNewCategory></AddNewCategory>
-  </div>
+    <div id="container">
+        <div style="display: inline-flex; margin-right: 2rem">
+            <Table></Table>
+            <AddNewCategory></AddNewCategory>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -19,5 +21,11 @@ export default {
 </script>
 
 <style>
+#container{
+    margin-top: 5%;
+    margin-left: 5%;
+
+}
+
 
 </style>

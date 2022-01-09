@@ -24,7 +24,7 @@
         </div>
         <div :id="category.title+'_'+category.id" class="taskModal">
             <div class="taskModalContent">
-                <span class="close">&times;</span>
+                <span :id="category.title+'_'+category.id+'_close'" class="close">&times;</span>
                 <input v-model="newTask" style="margin-bottom: 1rem" class="form-control" type="text" placeholder="Enter the title of the new task">
                 <textarea v-model="newTaskDescription" style="margin-bottom: 1rem" class="form-control" type="text" placeholder="Description"></textarea>
                 <div v-if="!modify">
@@ -58,10 +58,12 @@ export default {
                 this.modifyId = task.id;
             }
             else{
-                 this.modify = false;
+                this.modify = false;
+                this.newTask = "";
+                this.newTaskDescription = "";
             }
             var modal = document.getElementById(this.category.title+'_'+this.category.id);
-            var span = document.getElementsByClassName("close")[0];
+            var span = document.getElementById(this.category.title+'_'+this.category.id+'_close');
             modal.style.display = "block";
 
             span.onclick = function() {
@@ -74,7 +76,7 @@ export default {
                 }
             }
         },
-        addNewTask(){
+        addNewTask(){        
             if(this.newTask.length < 3){
                 alert("Please add a proper task");
                 return;
