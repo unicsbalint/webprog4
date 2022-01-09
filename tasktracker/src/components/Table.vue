@@ -1,7 +1,7 @@
 
 <template>
   <div id="board">
-      <div v-for="category in categories" :key="category.id">
+      <div v-for="category in getCategories" :key="category.id">
           <Category :category=category></Category>
       </div>
   </div>
@@ -14,14 +14,12 @@ export default {
     components:{
         Category      
     },
-    data() {
-        return{
-            categories: [
-                {id:0, title:"Backlog"},
-                {id:1, title:"Doing"},
-            ]
+    computed: {
+        getCategories () {
+            return this.$store.getters.getCategories
         }
     },
+
 }
 </script>
 
