@@ -58,6 +58,15 @@ export default new Vuex.Store({
                     task.description = modifiedTask.description;
                 }
             });
+        },
+        MOVETASK(state,data){
+            let taskId = data.taskId;
+            let categoryId = data.categoryId;
+            state.tasks.forEach(task => {
+                if(task.id == taskId){
+                    task.category_id = categoryId;
+                }
+            })
         }
     },
     actions: {
@@ -69,6 +78,9 @@ export default new Vuex.Store({
         },
         modifyTask(context,task){
             context.commit('MODIFYTASK', task);
+        },
+        moveTask(context,data){
+            context.commit('MOVETASK', data);
         }
     },
 })
