@@ -1,22 +1,31 @@
 
 <template>
     <div>
-        <div style="min-width: 300px">
-                <div class="card w-75">
-                    <div class="card-body">
-                        <h5 class="card-title">{{category.title}}</h5>
+        <div style="min-width: 300px" :category="category.id" @dragover.prevent @drop.prevent="drop($event)">
+                <div class="card w-75" :category="category.id">
+                    <div class="card-body" :category=category.id>
+                        <h5 class="card-title" :category=category.id>{{category.title}}</h5>
 
                         <div id="task">
-                            <div @click.prevent="showModal(task)" v-for="task in getTasksById" :key=task.id class="card bg-light mb-3" style="max-width: 18rem; cursor: pointer;">
-                                <div class="card-body">
+                            <div 
+                                @click.prevent="showModal(task)" 
+                                v-for="task in getTasksById" :key=task.id 
+                                class="card bg-light mb-3" 
+                                style="max-width: 18rem; cursor: pointer;"
+                                draggable="true"
+                                :task=task.id
+                                @dragstart="dragStart"
+                                @dragover.stop
+                            >
+                                <div :task=task.id class="card-body">
                                     <p style="font-weight: bold" class="card-text">{{task.title}}</p>
                                     <p class="description">{{task.description}}</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div>
-                            <button @click.prevent="showModal()" class="btn btn-primary">Add new task</button>
+                        <div :category="category.id">
+                            <button :category="category.id" @click.prevent="showModal()" class="btn btn-primary">Add new task</button>
                         </div>           
                     </div>
                 </div>
@@ -100,7 +109,16 @@ export default {
 
             var modal = document.getElementById(this.category.title+'_'+this.category.id);
             modal.style.display = "none";
-        }
+        },
+        dragStart: e => {
+            const taskId = e.target.getAttribute("task");
+            e.dataTransfer.setData("taskId",taskId);
+        },
+        drop(e) {
+            let category = e.target.getAttribute("category");
+            const taskId = e.dataTransfer.getData("taskId");
+            this.$store.dispatch('moveTask', {taskId:taskId,categoryId: category});
+        }        
     },
     props: [
         'category'
