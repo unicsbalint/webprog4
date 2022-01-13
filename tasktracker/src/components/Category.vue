@@ -4,11 +4,10 @@
         <div style="min-width: 300px" :category="category.id" @dragover.prevent @drop.prevent="drop($event)">
                 <div class="card w-75" :category="category.id">
                     <div class="card-body" :category=category.id>
+                        <span @click.prevent="deleteCategory(category.id)" class="close" style="position:absolute; right: 2px; top: -12px">&times;</span>
                         <h5 class="card-title" :category=category.id>{{category.title}}</h5>
-
                         <div id="task">
                             <div 
-                                @click.prevent="showModal(task)" 
                                 v-for="task in getTasksById" :key=task.id 
                                 class="card bg-light mb-3" 
                                 style="max-width: 18rem; cursor: pointer;"
@@ -17,7 +16,8 @@
                                 @dragstart="dragStart"
                                 @dragover.stop
                             >
-                                <div :task=task.id class="card-body">
+                                <span style="position:absolute; right: 5px" class="close" @click.prevent="deleteTask(task.id)">&times;</span>
+                                <div :task=task.id class="card-body" @click.prevent="showModal(task)">
                                     <p style="font-weight: bold" class="card-text">{{task.title}}</p>
                                     <p class="description">{{task.description}}</p>
                                 </div>
@@ -86,8 +86,8 @@ export default {
             }
         },
         addNewTask(){        
-            if(this.newTask.length < 3){
-                alert("Please add a proper task");
+            if(this.newTask.length < 3 || this.newTaskDescription.length < 3){
+                alert("Please add an at least 3 characters long task with a description");
                 return;
             }
             this.$store.dispatch('addTask', {task:this.newTask, description: this.newTaskDescription, categoryId: this.category.id});
@@ -98,8 +98,8 @@ export default {
             modal.style.display = "none";
         },
         modifyTask(){
-            if(this.newTask.length < 3){
-                alert("Please add a proper task");
+            if(this.newTask.length < 3 || this.newTaskDescription.length < 3){
+                alert("Please give an at least 3 characters long task with a description");
                 return;
             }
             this.$store.dispatch('modifyTask', {id:this.modifyId,task:this.newTask, description: this.newTaskDescription});
@@ -118,7 +118,14 @@ export default {
             let category = e.target.getAttribute("category");
             const taskId = e.dataTransfer.getData("taskId");
             this.$store.dispatch('moveTask', {taskId:taskId,categoryId: category});
-        }        
+        },
+        deleteCategory(categoryId){
+            this.$store.dispatch('deleteCategory', categoryId);
+        },
+        deleteTask(taskId){
+            this.$store.dispatch('deleteTask', taskId);
+            console.log(taskId)
+        }
     },
     props: [
         'category'
