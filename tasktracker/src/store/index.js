@@ -67,6 +67,40 @@ export default new Vuex.Store({
                     task.category_id = categoryId;
                 }
             })
+        },
+        DELETECATEGORY(state,categoryId){
+            for (let i = 0; i < state.categories.length; i++){
+                if(state.categories[i].id == categoryId){
+                    state.categories.splice(i, 1); 
+                    break;
+                }
+            }
+            
+            let countOfTasks = 0;
+            for (let i = 0; i < state.tasks.length; i++){
+                console.log(i);
+                if(state.tasks[i].category_id == categoryId){
+                    countOfTasks++;
+                }
+            }
+            
+            for(let i = 0; i < countOfTasks; i++){
+                for (let j = 0; j < state.tasks.length; j++){
+                    if(state.tasks[j].category_id == categoryId){
+                        state.tasks.splice(j,1);
+                        break;
+                    }
+                }
+            }
+            
+        },
+        DELETETASK(state,taskId){
+            for (let i = 0; i < state.tasks.length; i++){
+                if(state.tasks[i].id == taskId){
+                    state.tasks.splice(i, 1); 
+                    break;
+                }
+            }
         }
     },
     actions: {
@@ -81,6 +115,12 @@ export default new Vuex.Store({
         },
         moveTask(context,data){
             context.commit('MOVETASK', data);
+        },
+        deleteCategory(context,categoryId){
+            context.commit('DELETECATEGORY', categoryId);
+        },
+        deleteTask(context,taskId){
+            context.commit('DELETETASK', taskId);
         }
     },
 })
